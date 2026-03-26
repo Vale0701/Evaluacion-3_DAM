@@ -1,0 +1,173 @@
+CREATE DATABASE paquexpres
+    DEFAULT CHARACTER SET = 'utf8mb4';
+
+use paquexpres
+
+CREATE TABLE `agente` (
+  `id_agen` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `passw` varchar(255) NOT NULL,
+  `telefono` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cliente`
+--
+
+CREATE TABLE `cliente` (
+  `id_cli` int(11) NOT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `ap` varchar(50) DEFAULT NULL,
+  `telefono` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `paquete`
+--
+
+CREATE TABLE `paquete` (
+  `id_paq` int(11) NOT NULL,
+  `direc_dest` varchar(50) DEFAULT NULL,
+  `status` enum('Pendiente','En curso','Detenido','Recogido','Entregado') DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `latitud` decimal(10,8) DEFAULT NULL,
+  `longitud` decimal(11,8) DEFAULT NULL,
+  `fecha_en` timestamp NULL DEFAULT NULL,
+  `id_cli` int(11) DEFAULT NULL,
+  `id_agen` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Índices para tablas volcadas
+--
+
+--
+-- Indices de la tabla `agente`
+--
+ALTER TABLE `agente`
+  ADD PRIMARY KEY (`id_agen`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indices de la tabla `cliente`
+--
+ALTER TABLE `cliente`
+  ADD PRIMARY KEY (`id_cli`);
+
+--
+-- Indices de la tabla `paquete`
+--
+ALTER TABLE `paquete`
+  ADD PRIMARY KEY (`id_paq`),
+  ADD KEY `id_cli` (`id_cli`),
+  ADD KEY `id_agen` (`id_agen`);
+
+--
+-- AUTO_INCREMENT de las tablas volcadas
+--
+
+--
+-- AUTO_INCREMENT de la tabla `agente`
+--
+ALTER TABLE `agente`
+  MODIFY `id_agen` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `cliente`
+--
+ALTER TABLE `cliente`
+  MODIFY `id_cli` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `paquete`
+--
+ALTER TABLE `paquete`
+  MODIFY `id_paq` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `paquete`
+--
+ALTER TABLE `paquete`
+  ADD CONSTRAINT `paquete_ibfk_1` FOREIGN KEY (`id_cli`) REFERENCES `cliente` (`id_cli`),
+  ADD CONSTRAINT `paquete_ibfk_2` FOREIGN KEY (`id_agen`) REFERENCES `agente` (`id_agen`);
+COMMIT;
+
+
+
+drop DATABASE paquexpres
+
+
+
+CREATE DATABASE IF NOT EXISTS paquexpres
+    DEFAULT CHARACTER SET = 'utf8mb4';
+
+USE paquexpres;
+
+CREATE TABLE IF NOT EXISTS `agente` (
+  `id_agen` int(11) NOT NULL,
+  `nombre` varchar(50) NOT NULL,
+  `email` varchar(50) NOT NULL,
+  `passw` varchar(255) NOT NULL,
+  `telefono` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `cliente` (
+  `id_cli` int(11) NOT NULL,
+  `nombre` varchar(50) DEFAULT NULL,
+  `ap` varchar(50) DEFAULT NULL,
+  `telefono` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS `paquete` (
+  `id_paq` int(11) NOT NULL,
+  `direc_dest` varchar(50) DEFAULT NULL,
+  `status` enum('Pendiente','En curso','Detenido','Recogido','Entregado') DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `latitud` decimal(10,8) DEFAULT NULL,
+  `longitud` decimal(11,8) DEFAULT NULL,
+  `fecha_en` timestamp NULL DEFAULT NULL,
+  `id_cli` int(11) DEFAULT NULL,
+  `id_agen` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Índices
+ALTER TABLE `agente`
+  ADD PRIMARY KEY (`id_agen`),
+  ADD UNIQUE KEY `email` (`email`);
+
+ALTER TABLE `cliente`
+  ADD PRIMARY KEY (`id_cli`);
+
+ALTER TABLE `paquete`
+  ADD PRIMARY KEY (`id_paq`),
+  ADD KEY `id_cli` (`id_cli`),
+  ADD KEY `id_agen` (`id_agen`);
+
+-- AUTO_INCREMENT
+ALTER TABLE `agente`
+  MODIFY `id_agen` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `cliente`
+  MODIFY `id_cli` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `paquete`
+  MODIFY `id_paq` int(11) NOT NULL AUTO_INCREMENT;
+
+-- Eliminar FK si ya existen (evita el error duplicate)
+ALTER TABLE `paquete`
+  DROP FOREIGN KEY IF EXISTS `paquete_ibfk_1`,
+  DROP FOREIGN KEY IF EXISTS `paquete_ibfk_2`;
+
+-- Agregar FK limpias
+ALTER TABLE `paquete`
+  ADD CONSTRAINT `paquete_ibfk_1` FOREIGN KEY (`id_cli`) REFERENCES `cliente` (`id_cli`),
+  ADD CONSTRAINT `paquete_ibfk_2` FOREIGN KEY (`id_agen`) REFERENCES `agente` (`id_agen`);
